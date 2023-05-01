@@ -126,7 +126,6 @@ for (const key in escolaridade) {
 
 function buildJSON() {
   return {
-    group: document.getElementById('grupos').value,
     minAge: document.getElementById('min-age-input').value,
     maxAge: document.getElementById('max-age-input').value,
     exactAge: document.getElementById('exact-age-input').value,
@@ -134,8 +133,8 @@ function buildJSON() {
     education: document.getElementById('escolaridades').value,
     etnicity: document.getElementById('raca-cores').value,
     community: document.getElementById('comunidades').value,
-    startDate: document.getElementById('min-appointment-date').value,
-    endDate: document.getElementById('max-appointment-date').value,
+    minDate: document.getElementById('min-appointment-date').value,
+    maxDate: document.getElementById('max-appointment-date').value,
     minWeight: document.getElementById('min-weight-input').value,
     maxWeight: document.getElementById('max-weight-input').value,
     minHeight: document.getElementById('min-height-input').value,
@@ -143,7 +142,8 @@ function buildJSON() {
     minIMC: document.getElementById('min-imc-input').value,
     maxIMC: document.getElementById('max-imc-input').value,
     state: document.getElementById('estados').value,
-    city: document.getElementById('cidades').value
+    city: document.getElementById('cidades').value,
+    CNES: document.getElementById('CNES').value
   }
 }
 
@@ -198,26 +198,21 @@ if ("caches" in window) {
 const form = document.querySelector('#query');
 form.addEventListener('submit', (event) => {
   // prevent the form from submitting in the default way
-  event.preventDefault(); 
+  event.preventDefault();
 
-  let fields = {
-    estado: document.getElementById('estados').value,
-    cidade: document.getElementById('cidades').value,
-    genero: document.getElementById('generos').value,
-    grupo: document.getElementById('grupos').value
-  };
-
+  let fields = buildJSON();
 
   if(fields.estado == '' && fields.cidade == ''){
     alert('Selecione um estado ou cidade!');
   }
 
-  // make an HTTP request to the server
-  fetch('/data', { 
+  fetch('/data', { // make an HTTP request to the server
     method: 'POST',
     body: JSON.stringify(fields),
     headers: {
       "Content-Type": "application/json",
+      mode: 'no-cors', 
+      'Access-Control-Allow-Origin': '*'
     },
   })
   .then(response => response.json())
@@ -225,11 +220,6 @@ form.addEventListener('submit', (event) => {
     document.getElementById('card-holder').style.display = "box";
     const img = document.getElementById('map-image');
     img.src = "data:image/png;base64,"+blob.image;
-  })
-  .then(response => response.json()) // parse the response as JSON
-  .then(data => {
-    console.log(data); 
-    // TODO: handle the response data
   })
   .catch(error => {
     console.error(error); 

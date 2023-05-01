@@ -41,11 +41,11 @@
             padding: 5px;
             cursor: pointer;
         }
-        
+
         select > option {
             font-family: 'Inter', Arial, Helvetica, sans-serif;
         }
-        
+
         /* Add shadows to create the "card" effect */
         #card-holder {
             box-shadow: 0 4px 8px 6px rgba(0,0,0,0.2);
@@ -123,6 +123,7 @@
       <option class="genero" value="Masculino">Masculino</option>
       <option class="genero" value="Feminino">Feminino</option>
     </select>
+    <!-- 
     <br>
     <br>
     Grupo etário 
@@ -131,7 +132,8 @@
       <option class="grupo" value="Criança">Criança</option>
       <option class="grupo" value="Adulto">Adulto</option>
       <option class="grupo" value="Idoso">Idoso</option>
-    </select>
+    </select> 
+    -->
     <br>
     <br>
     <label for="age-select">Escolha filtro de idade:</label>
@@ -156,11 +158,16 @@
       <input type="number" id="exact-age-input" name="exact-age-input">
     </div>
     <br><br>
+    <div id="cod-CNES">
+      <label for="CNES">CNES</label>
+      <input type="number" id="CNES" name="CNES">
+    </div>
+    <br>
+    <br>
     <div id="min-imc">
       <label for="min-imc-input">IMC mínimo:</label>
       <input type="number" id="min-imc-input" name="min-imc-input">
-    </div>
-    <br>
+    </div> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
     <div id="max-imc">
       <label for="max-imc-input">IMC máximo:</label>
       <input type="number" id="max-imc-input" name="max-imc-input">
@@ -175,8 +182,7 @@
     <div>
       <label for="appointment-date">Data inicial dos atendimentos:</label>
       <input type="date" id="min-appointment-date" name="datepicker" min="2021-01-01" max="2021-12-31">
-    </div>
-    <br>
+    </div>  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
     <div>
       <label for="appointment-date">Data final:</label>
       <input type="date" id="max-appointment-date" name="datepicker" min="2021-01-01" max="2021-12-31">
@@ -205,7 +211,6 @@
     </div>
     <button id="search-button" type="submit">Buscar</button>
   </form>
-
   <div id="card-holder">
     <div id="card-container">
     <img id="map-image">
