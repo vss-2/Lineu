@@ -40,6 +40,7 @@
             border-radius: 64px;
             padding: 5px;
             cursor: pointer;
+            max-width: 200px;
         }
 
         select > option {
@@ -50,7 +51,7 @@
         #card-holder {
             box-shadow: 0 4px 8px 6px rgba(0,0,0,0.2);
             transition: 0.3s;
-            color: #FAFAFA;
+            color: blackr;
             background-color: white;
             border-radius: 10px;
         }
@@ -86,22 +87,32 @@
             padding-left: 10px;
             max-width: 125px;
         }
+
+        #header {
+          display: flex;
+          flex-wrap: nowrap;
+          flex-direction: column;
+          align-items: center;
+        }
+
     </style>
     <title>Lineu - Vigilância Alimentar</title>
 </head>
 <body>
-  <img id="logo" src="/frontend/static/Lineu.png">
-  <h2 id="identifier">Lineu - Nutrição Nacional</h2>
+  <div id="header">
+    <img id="logo" src="/frontend/static/Lineu.png">
+    <h2 id="identifier">Lineu - Nutrição Nacional</h2>
+  </div>
   <form id="query">
     Estado 
     <select id="estados" onchange="fetchCidades(event)">
       <option value=""></option>
     </select>
     Cidade 
-    <select id="cidades">
+    <select id="cidades" onchange="citySelected(this)">
       <option value=""></option>
     </select>
-    <br><br>
+    <br>
     Raça/Cor
     <select id="raca-cores">
       <option value=""></option>
@@ -110,12 +121,11 @@
     <select id="comunidades">
       <option value=""></option>
     </select>
-    <br><br>
+    <br>
     Grau de escolaridade
     <select id="escolaridades">
       <option value=""></option>
     </select>
-    <br>
     <br>
     Gênero 
     <select id="generos">
@@ -135,42 +145,42 @@
     </select> 
     -->
     <br>
-    <br>
     <label for="age-select">Escolha filtro de idade:</label>
     <select id="age-select" onchange="toggleAgeFields()">
       <option value="">Tipo de filtro</option>
       <option value="age range">Por faixa de idade</option>
       <option value="age equal">Idade exata</option>
     </select>
-    <br><br>
-    <div id="min-age" style="display: none;">
-      <label for="min-age-input">Idade mínima:</label>
-      <input type="number" id="min-age-input" name="min-age-input">
-    </div>
     <br>
-    <div id="max-age" style="display: none;">
-      <label for="max-age-input">Idade máxima:</label>
-      <input type="number" id="max-age-input" name="max-age-input">
+    <div class="pair-select">
+      <div id="min-age" style="display: none;">
+        <label for="min-age-input">Idade mínima:</label>
+        <input type="number" id="min-age-input" name="min-age-input">
+      </div> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <div id="max-age" style="display: none;">
+        <label for="max-age-input">Idade máxima:</label>
+        <input type="number" id="max-age-input" name="max-age-input">
+      </div>
     </div>
-    <br>
+    &nbsp;
     <div id="exact-age" style="display: none;">
       <label for="exact-age-input">Idade exata:</label>
       <input type="number" id="exact-age-input" name="exact-age-input">
-    </div>
-    <br><br>
+    </div> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <div id="cod-CNES">
       <label for="CNES">CNES</label>
       <input type="number" id="CNES" name="CNES">
     </div>
     <br>
-    <br>
-    <div id="min-imc">
-      <label for="min-imc-input">IMC mínimo:</label>
-      <input type="number" id="min-imc-input" name="min-imc-input">
-    </div> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    <div id="max-imc">
-      <label for="max-imc-input">IMC máximo:</label>
-      <input type="number" id="max-imc-input" name="max-imc-input">
+    <div class="pair-select">
+      <div id="min-imc">
+        <label for="min-imc-input">IMC mínimo:</label>
+        <input type="number" id="min-imc-input" name="min-imc-input">
+      </div> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+      <div id="max-imc">
+        <label for="max-imc-input">IMC máximo:</label>
+        <input type="number" id="max-imc-input" name="max-imc-input">
+      </div>
     </div>
     <br>
     <label>
@@ -179,41 +189,45 @@
     </label>
     <br>
     <br>
-    <div>
-      <label for="appointment-date">Data inicial dos atendimentos:</label>
-      <input type="date" id="min-appointment-date" name="datepicker" min="2021-01-01" max="2021-12-31">
-    </div>  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    <div>
-      <label for="appointment-date">Data final:</label>
-      <input type="date" id="max-appointment-date" name="datepicker" min="2021-01-01" max="2021-12-31">
+    <div class="pair-select">
+      <div>
+        <label for="appointment-date">Data inicial dos atendimentos:</label>
+        <input type="date" id="min-appointment-date" name="datepicker" min="2021-01-01" max="2021-12-31">
+      </div>  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+      <div>
+        <label for="appointment-date">Data final:</label>
+        <input type="date" id="max-appointment-date" name="datepicker" min="2021-01-01" max="2021-12-31">
+      </div>
     </div>
     <br>
-    <br>
-    <div id="min-height">
-      <label for="min-height-input">Altura mínima (em cm):</label>
-      <input type="number" id="min-height-input" name="min-height-input">
+    <div class="pair-select">
+      <div id="min-height">
+        <label for="min-height-input">Altura mínima (em cm):</label>
+        <input type="number" id="min-height-input" name="min-height-input">
+      </div> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <div id="max-height">
+        <label for="max-height-input">Altura máxima (em cm):</label>
+        <input type="number" id="max-height-input" name="max-height-input">
+      </div>
     </div>
     <br>
-    <div id="max-height">
-      <label for="max-height-input">Altura máxima (em cm):</label>
-      <input type="number" id="max-height-input" name="max-height-input">
-    </div>
-    <br>
-    <br>
-    <div id="min-weight">
-      <label for="min-weight-input">Peso mínimo (em kg):</label>
-      <input type="number" id="min-weight-input" name="min-weight-input">
-    </div>
-    <br>
-    <div id="max-weight">
-      <label for="max-weight-input">Peso máximo (em kg):</label>
-      <input type="number" id="max-weight-input" name="max-weight-input">
+    <div class="pair-select">
+      <div id="min-weight">
+        <label for="min-weight-input">Peso mínimo (em kg):</label>
+        <input type="number" id="min-weight-input" name="min-weight-input">
+      </div> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <div id="max-weight">
+        <label for="max-weight-input">Peso máximo (em kg):</label>
+        <input type="number" id="max-weight-input" name="max-weight-input">
+      </div>
     </div>
     <button id="search-button" type="submit">Buscar</button>
   </form>
   <div id="card-holder">
     <div id="card-container">
-    <img id="map-image">
+      <img id="map-image">
+      <div id="city-data"></div>
+    </div>
   </div>
 </body>
 </html>

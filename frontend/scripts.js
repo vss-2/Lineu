@@ -147,6 +147,12 @@ function buildJSON() {
   }
 }
 
+let optionSelected = '';
+
+function citySelected(sel) {
+  optionSelected = sel.options[sel.selectedIndex].text;
+}
+
 fetch(municipalities, {mode: 'cors', 'Access-Control-Allow-Origin': '*'})
   .then((response) => response.json())
   .then((data) => {
@@ -220,6 +226,45 @@ form.addEventListener('submit', (event) => {
     document.getElementById('card-holder').style.display = "box";
     const img = document.getElementById('map-image');
     img.src = "data:image/png;base64,"+blob.image;
+    let unordered_list = document.createElement("ul");
+    let count = 0;
+    let itens = ['Peso', 'Altura', 'Idade', 'IMC'];
+
+    let cityStateTitle = document.createElement('h3');
+    cityStateTitle.innerText = optionSelected + '-' + document.getElementById('estados').value;
+
+    for (let statistic of ['NU_PESO', 'NU_ALTURA', 'NU_IDADE_ANO', 'DS_IMC']){
+        let new_ul_item = document.createElement("li");
+
+        try {
+          blob.data = JSON.parse(blob.data);
+        } catch (error) { 
+          /* TODO: fix error on JSON.parse: 
+            SyntaxError: "[object Object]" is not valid JSON
+          */
+        }
+
+        function generateList(new_ul_item){
+            new_ul_item.innerText += itens[count] + '\n';
+            if(blob.data[statistic]['mean']){
+              new_ul_item.innerHTML += itens[count] + ' médio(a): ' + blob.data[statistic]['mean'];
+              new_ul_item.innerHTML += '<br>';
+            }
+            if(blob.data[statistic]['std']){
+              new_ul_item.innerHTML += 'Desvio padrão: ' + blob.data[statistic]['std'];
+              new_ul_item.innerHTML += '<br>';
+            }
+            new_ul_item.innerHTML += 'Quartis (25, 50, 75)%: ' + blob.data[statistic]['25%'] + ', ' + blob.data[statistic]['50%'] + ', ' + blob.data[statistic]['75%'];
+            new_ul_item.innerHTML += '<br>';
+            console.log(new_ul_item);
+        }
+        generateList(new_ul_item);
+        unordered_list.appendChild(new_ul_item);
+        count += 1;
+    }
+    document.getElementById('query').style.display = 'none';
+    document.getElementById('city-data').appendChild(cityStateTitle);
+    document.getElementById('city-data').appendChild(unordered_list);
   })
   .catch(error => {
     console.error(error); 
