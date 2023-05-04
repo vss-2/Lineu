@@ -25,7 +25,7 @@ def check_if_has_dataset() -> bool:
                     Mova o arquivo para esta pasta e execute novamente \"python3 Lineu.py\" ou \
                     pressione 1 para baixar o arquivo: sisvan_estado_nutricional_2021.zip' + Style.RESET_ALL)
 
-            if(response == 1):
+            if(response == '1'):
                 url = 'https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SISVAN/estado_nutricional/sisvan_estado_nutricional_2021.zip'
                 filename = 'sisvan_estado_nutricional.zip'
 
@@ -35,8 +35,13 @@ def check_if_has_dataset() -> bool:
                         for chunk in r.iter_content(chunk_size=8192):
                             f.write(chunk)
 
-                with ZipFile('your_zip_file.zip', 'r') as zip_ref:
-                    zip_ref.extract('sisvan_estado_nutricional.csv', str(realpath('.')))
+                with ZipFile('sisvan_estado_nutricional.zip', 'r') as zip_ref:
+                    for year in ['2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010', '2009', '2008']:
+                        try:
+                            zip_ref.extract(f'sisvan_estado_nutricional_{year}.csv', str(realpath('.')))
+                        except:
+                            continue
+                        break
                 
                 run(['bash', './splitter.sh'])
                 print('Descompactando e fragmentando arquivos. Isso vai demorar mais que dois minuto!')
@@ -55,3 +60,5 @@ def check_if_has_dataset() -> bool:
             else:
                 return False
     return True
+
+check_if_has_dataset()
