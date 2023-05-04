@@ -1,0 +1,10 @@
+matplotlib==3.4.1
+pickleshare==0.7.5
+geobr==0.2.0
+geopandas==0.7.0
+pandas==1.4.2
+pandasql==0.7.3
+Flask==2.2.2
+descartes==1.1.0
+python-dotenv==1.0.0
+requests
