@@ -200,6 +200,10 @@ if ("caches" in window) {
   );
 }
 
+function hideResults(){
+  document.getElementById('card-holder').style.display = 'none';
+  document.getElementById('query').style.display = 'block';
+}
 
 const form = document.querySelector('#query');
 form.addEventListener('submit', (event) => {
@@ -223,7 +227,8 @@ form.addEventListener('submit', (event) => {
   })
   .then(response => response.json())
   .then(blob => {
-    document.getElementById('card-holder').style.display = "box";
+    document.getElementById('city-data').innerHTML = "";
+    document.getElementById('card-holder').style.display = "block";
     const img = document.getElementById('map-image');
     img.src = "data:image/png;base64,"+blob.image;
     let unordered_list = document.createElement("ul");
@@ -233,16 +238,18 @@ form.addEventListener('submit', (event) => {
     let cityStateTitle = document.createElement('h3');
     cityStateTitle.innerText = optionSelected + '-' + document.getElementById('estados').value;
 
+    try {
+      blob.data = JSON.parse(blob.data);
+      cityStateTitle.innerText += ' (' + blob.data['NU_PESO']['count'] + ' registros)'
+      console.log(blob.data);
+    } catch (error) { 
+      /* TODO: fix error on JSON.parse: 
+        SyntaxError: "[object Object]" is not valid JSON
+      */
+    }
+
     for (let statistic of ['NU_PESO', 'NU_ALTURA', 'NU_IDADE_ANO', 'DS_IMC']){
         let new_ul_item = document.createElement("li");
-
-        try {
-          blob.data = JSON.parse(blob.data);
-        } catch (error) { 
-          /* TODO: fix error on JSON.parse: 
-            SyntaxError: "[object Object]" is not valid JSON
-          */
-        }
 
         function generateList(new_ul_item){
             new_ul_item.innerText += itens[count] + '\n';
@@ -256,15 +263,19 @@ form.addEventListener('submit', (event) => {
             }
             new_ul_item.innerHTML += 'Quartis (25, 50, 75)%: ' + blob.data[statistic]['25%'] + ', ' + blob.data[statistic]['50%'] + ', ' + blob.data[statistic]['75%'];
             new_ul_item.innerHTML += '<br>';
-            console.log(new_ul_item);
         }
         generateList(new_ul_item);
         unordered_list.appendChild(new_ul_item);
         count += 1;
     }
+    let returnButton = document.createElement('button');
+    returnButton.innerText = 'Voltar';
+    returnButton.onclick = () => hideResults();
+    returnButton.id = 'search-button';
     document.getElementById('query').style.display = 'none';
     document.getElementById('city-data').appendChild(cityStateTitle);
     document.getElementById('city-data').appendChild(unordered_list);
+    document.getElementById('city-data').appendChild(returnButton);
   })
   .catch(error => {
     console.error(error); 
