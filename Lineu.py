@@ -165,9 +165,9 @@ def create_selectors() -> None:
         if(not val[3] in estado_cidade):
             estado_cidade.update({val[3]: []})
         else:
-            if '.' in val[0]:
-                val[0] = val[0][:val[0].index('.')]
-            estado_cidade[val[3]].append({val[1]: str(val[0])[:-2]})
+            if '.' in str(val[0]):
+                val[0] = str(val[0])[:str(val[0]).index('.')]
+            estado_cidade[val[3]].append({val[1]: str(val[0])})
     with open('estado_cidade_codigo.json', 'w') as f:
         json.dump(estado_cidade, f)
 

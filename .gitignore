@@ -4,3 +4,5 @@
 __pycache__/*
 *.json
 df.pickle
+!estado_cidade_codigo.json
+ngrok
