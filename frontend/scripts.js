@@ -1,4 +1,4 @@
-const municipalities = "http://127.0.0.1:5000/municipalities";
+const municipalities = location.href+"/municipalities";
 const cidade_class = "cidade";
 var cities = {};
 

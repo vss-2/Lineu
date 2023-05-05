@@ -425,4 +425,4 @@ def lineu_logo():
 #     return send_from_directory('static', path)
 
 # Adicionar HOST e PORT vindos do .env
-app.run()
+app.run(port=5050)
