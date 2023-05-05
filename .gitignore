@@ -1,5 +1,6 @@
-!*.*
+/**/
 !Dockerfile
 *.png
 __pycache__/*
 *.json
+df.pickle

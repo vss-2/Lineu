@@ -224,7 +224,6 @@ def thread_filter(filters: dict, id_thread: int, queue: Queue) -> dict:
         print('6')
 
     # pd_copy['NU_ALTURA'] = pd_copy['NU_ALTURA'].dropna()
-    pd_copy['NU_ALTURA'] = pd_copy['NU_ALTURA'].astype('float32')
 
     # Date range filter
     if(filters['minDate']):
@@ -243,6 +242,8 @@ def thread_filter(filters: dict, id_thread: int, queue: Queue) -> dict:
     if(filters['maxAge']):
         print('10')
         pd_copy = pd_copy[pd_copy['NU_IDADE_ANO'] < filters['maxAge']]
+
+    pd_copy['DS_IMC'] = pd_copy['DS_IMC'].astype('int32')
 
     # IMC range filter
     if(filters['minIMC']):
@@ -295,9 +296,10 @@ def thread_filter(filters: dict, id_thread: int, queue: Queue) -> dict:
     try:
         cidade = read_municipality(code_muni=int(filters['city']), year=2010)
     except:
-       print('dei except')
        images[id_thread-1] = 'undefined muni'
-       return {'msg': 'error: undefined muni'}
+       if(cidade != None):
+            print('dei except')
+            return {'msg': 'error: undefined muni'}
 
     # print('len', len(pd_copy))
 
@@ -305,7 +307,13 @@ def thread_filter(filters: dict, id_thread: int, queue: Queue) -> dict:
     images[id_thread-1] = image_uuid
     queue.put(cidade)
 
-    print('new file at', realpath('.')+'/matplotimages/'+str(images[id_thread-1]))
+    # print('new file at', realpath('.')+'/matplotimages/'+str(images[id_thread-1]))
+    if(filters['state'] == 'BR'):
+        with open(realpath('.')+'/matplotimages/'+str(images[id_thread-1]), 'wb') as imagefile:
+            pickle.dump(pd_copy, imagefile)
+        subprocess.run(["python3", f"{realpath('.')}/national_map.py", str(image_uuid)])
+        return {'msg': 'success'}
+
     with open(realpath('.')+'/matplotimages/'+str(images[id_thread-1]), 'wb') as imagefile:
         pickle.dump(cidade, imagefile)
     
@@ -361,7 +369,7 @@ def get_slash():
     # print(images)
     while(not exists(realpath('.')+'/matplotimages/'+images[id_thread-1]+'.png')):
         print('to dormindo')
-        sleep(0.4)
+        sleep(1)
 
     # Probably there's a better way to transfer a file to buffer without using PIL    
     # img = Image.open('./'+images[id_thread-1]+'.png')
@@ -377,12 +385,14 @@ def get_slash():
     data = base64.b64encode(data).decode()
 
     json_data = None
-    with open(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + '.json', 'r') as j:
-        json_data = j.read()
+    if(exists(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + '.json')):
+        with open(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + '.json', 'r') as j:
+            json_data = j.read()
     
     cnes_data = None
-    with open(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + 'CNES.json', 'r') as j:
-        cnes_data = j.read()
+    if(exists(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + 'CNES.json')):
+        with open(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + 'CNES.json', 'r') as j:
+            cnes_data = j.read()
 
     response = jsonify({'msg': 'success', 'format': 'png', 'data': json_data, 'image': data, 'cnes': cnes_data})
     response.headers.add('Access-Control-Allow-Origin', '*')
