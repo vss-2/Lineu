@@ -205,6 +205,8 @@ function hideResults(){
   document.getElementById('query').style.display = 'block';
 }
 
+const navlang = navigator.language;
+
 const form = document.querySelector('#query');
 form.addEventListener('submit', (event) => {
   // prevent the form from submitting in the default way
@@ -240,7 +242,8 @@ form.addEventListener('submit', (event) => {
 
     try {
       blob.data = JSON.parse(blob.data);
-      cityStateTitle.innerText += ' (' + blob.data['NU_PESO']['count'] + ' registros)'
+      blob.cnes = JSON.parse(blob.cnes);
+      cityStateTitle.innerText += ' (' + blob.data['NU_PESO']['count'] + ' registros)';
       console.log(blob.data);
     } catch (error) { 
       /* TODO: fix error on JSON.parse: 
@@ -254,20 +257,34 @@ form.addEventListener('submit', (event) => {
         function generateList(new_ul_item){
             new_ul_item.innerText += itens[count] + '\n';
             if(blob.data[statistic]['mean']){
-              new_ul_item.innerHTML += itens[count] + ' médio(a): ' + blob.data[statistic]['mean'];
+              new_ul_item.innerHTML += itens[count] + ' médio(a): ' + blob.data[statistic]['mean'].toLocaleString(navlang, {maximumFractionDigits: 2, minimumFractionDigits: 2});
               new_ul_item.innerHTML += '<br>';
             }
             if(blob.data[statistic]['std']){
-              new_ul_item.innerHTML += 'Desvio padrão: ' + blob.data[statistic]['std'];
+              new_ul_item.innerHTML += 'Desvio padrão: ' + blob.data[statistic]['std'].toLocaleString(navlang, {maximumFractionDigits: 2, minimumFractionDigits: 2});
               new_ul_item.innerHTML += '<br>';
             }
-            new_ul_item.innerHTML += 'Quartis (25, 50, 75)%: ' + blob.data[statistic]['25%'] + ', ' + blob.data[statistic]['50%'] + ', ' + blob.data[statistic]['75%'];
-            new_ul_item.innerHTML += '<br>';
+            new_ul_item.innerHTML += 'Quartis (25, 50, 75)%: ' + blob.data[statistic]['25%'].toLocaleString(navlang, {maximumFractionDigits: 2, minimumFractionDigits: 2}) + '; ' + blob.data[statistic]['50%'].toLocaleString(navlang, {maximumFractionDigits: 2, minimumFractionDigits: 2}) + '; ' + blob.data[statistic]['75%'].toLocaleString(navlang, {maximumFractionDigits: 2, minimumFractionDigits: 2});
+            new_ul_item.innerHTML += '<br><br>';
         }
         generateList(new_ul_item);
         unordered_list.appendChild(new_ul_item);
         count += 1;
     }
+    let cnesDiv = document.createElement('div');
+    cnesDiv.className = "cnes-list";
+    let cnesList = document.createElement('ol');
+    cnesList.className = 'ol-list'
+    cnesDiv.appendChild(cnesList);
+    
+    for(let cnes of Object.keys(blob.cnes)){
+      if(cnes.length > 8){
+        let itemCnes = document.createElement('li');
+        itemCnes.innerHTML = `<a href="https://cnes.datasus.gov.br/pages/estabelecimentos/consulta.jsp?search=${cnes.slice(0, -2)}">${cnes.slice(0,-2)}</a>: ${blob.cnes[cnes]} exames`
+        cnesList.appendChild(itemCnes);
+      }
+    }
+    
     let returnButton = document.createElement('button');
     returnButton.innerText = 'Voltar';
     returnButton.onclick = () => hideResults();
@@ -275,6 +292,7 @@ form.addEventListener('submit', (event) => {
     document.getElementById('query').style.display = 'none';
     document.getElementById('city-data').appendChild(cityStateTitle);
     document.getElementById('city-data').appendChild(unordered_list);
+    document.getElementById('city-data').appendChild(cnesDiv);
     document.getElementById('city-data').appendChild(returnButton);
   })
   .catch(error => {

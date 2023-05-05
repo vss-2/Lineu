@@ -72,7 +72,7 @@
             border-style: none;
             font-family: 'Inter', Arial, Helvetica, sans-serif;
             padding: 16px;
-            margin-left: 13vh;
+            margin-left: 43%;
             cursor: pointer;
         }
 
@@ -95,6 +95,35 @@
           align-items: center;
         }
 
+        .pair-select {
+          display: flex;
+          flex-wrap: wrap;
+        }
+
+        .cnes-list {
+          overflow-y: scroll;
+          max-height: 200px;
+        }
+
+        @media print {
+          body {
+            visibility: hidden;
+          }
+          #card-container {
+            visibility: visible;
+            position: absolute;
+            left: 0;
+            top: 0;
+          }
+          .cnes-list {
+            overflow-y: unset;
+            max-width: unset;
+          }
+          .ol-list {
+            column-gap: 120px;
+            column-count: 3;
+          }
+        }
     </style>
     <title>Lineu - Vigilância Alimentar</title>
 </head>

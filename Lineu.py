@@ -318,7 +318,7 @@ def thread_filter(filters: dict, id_thread: int, queue: Queue) -> dict:
         # print(pd_copy['NU_PESO'].describe())
         jsonfile.write(pd_copy.describe().to_json())
     
-    with open(realpath('.')+'/citiesjsons/'+str(images[id_thread-1]) + 'CNES' + '.json', 'w') as jsonfile:
+    with open(realpath('.')+'/citiesjsons/'+str(images[id_thread-1]) + 'CNES.json', 'w') as jsonfile:
         jsonfile.write(pd_copy['CO_CNES'].value_counts().to_json())
     
     return {'msg': 'success'}
@@ -379,8 +379,12 @@ def get_slash():
     json_data = None
     with open(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + '.json', 'r') as j:
         json_data = j.read()
+    
+    cnes_data = None
+    with open(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + 'CNES.json', 'r') as j:
+        cnes_data = j.read()
 
-    response = jsonify({'msg': 'success', 'format': 'png', 'data': json_data, 'image': data})
+    response = jsonify({'msg': 'success', 'format': 'png', 'data': json_data, 'image': data, 'cnes': cnes_data})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
     # return send_file(f'{images[id_thread-1]}.png', mimetype='image/png')
