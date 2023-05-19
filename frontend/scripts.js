@@ -205,7 +205,7 @@ function hideResults(){
   document.getElementById('query').style.display = 'block';
 }
 
-const navlang = navigator.language;
+const navlang = navigator.language ||undefined;
 
 const form = document.querySelector('#query');
 form.addEventListener('submit', (event) => {
