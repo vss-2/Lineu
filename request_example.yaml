@@ -1,0 +1,21 @@
+query:
+  initial:
+    date: '2000-01-01' # Date, as string
+    bmi: 1 # integer body mass index
+    height: 100 # integer in centimeters
+    weight: 1 # integer in kilograms
+    age: 0 # integer in years
+  final:
+    date: '2100-01-01'
+    bmi: 50
+    height: 250
+    weight: 150
+    age: 100
+  exact:
+    date: '2100-01-01'
+    bmi: 50
+    height: 250
+    weight: 150
+    age: 100
+  etnicity: 5 # integer as described in standards.yaml
+  community: 1 # integer as described in standards.yaml

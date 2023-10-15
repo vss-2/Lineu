@@ -12,9 +12,9 @@ def check_if_has_dataset() -> bool:
     if not exists(realpath('.')+'/'+'matplotimages'):
         mkdir(realpath('.')+'/'+'matplotimages')
 
-    if exists(realpath('.')+'/'+'df.pickle'): 
+    if exists(realpath('.')+'/'+'df.pickle'):
         return True
-    
+
     # One of these two files should exist
     if(not (exists(realpath('.')+'/'+'sisvan_estado_nutricional_2021.zip') or
         exists(realpath('.')+'/'+'sisvan_estado_nutricional.zip'))):
@@ -42,7 +42,7 @@ def check_if_has_dataset() -> bool:
                         except:
                             continue
                         break
-                
+
                 run(['bash', './splitter.sh'])
                 print('Descompactando e fragmentando arquivos. Isso vai demorar mais que dois minuto!')
                 sleep(30)
@@ -55,7 +55,7 @@ def check_if_has_dataset() -> bool:
                             stop = True
                         else:
                             stop = False
-                
+
                 return True
             else:
                 return False

@@ -93,19 +93,19 @@ def read_csvs(pd_df: pd.DataFrame) -> pd.DataFrame:
     pd_df['SG_UF'] = pd_df['SG_UF'].astype('category')
 
     count = 0
-    
+
     required_files = ['xab', 'xac', 'xad', 'xae', 'xaf', 'xag', 'xah', 'xai', 'xaj', 'xak', 'xal', 'xam', 'xan', 'xao']
     if(not all([exists(realpath('./')+'/'+f) for f in required_files])):
         print("ERROR: some files are missing, try running: python3 setup.py")
         exit()
 
     for splitted_file in required_files:
-        temp_pd_df = pd.read_csv(realpath('.')+'/'+splitted_file, 
+        temp_pd_df = pd.read_csv(realpath('.')+'/'+splitted_file,
                                 sep=';', encoding='latin-1')
         temp_pd_df.drop(['CO_ACOMPANHAMENTO', 'CO_PESSOA_SISVAN', 'ST_PARTICIPA_ANDI', 
                     'NO_MUNICIPIO', 'DS_FASE_VIDA', 'DS_RACA_COR',
-                    'PESO X IDADE', 'PESO X ALTURA', 'CO_SISTEMA_ORIGEM_ACOMP', 
-                    'SISTEMA_ORIGEM_ACOMP', 'NU_COMPETENCIA', 
+                    'PESO X IDADE', 'PESO X ALTURA', 'CO_SISTEMA_ORIGEM_ACOMP',
+                    'SISTEMA_ORIGEM_ACOMP', 'NU_COMPETENCIA',
                     'DS_ESCOLARIDADE', 'DS_POVO_COMUNIDADE'], axis=1, inplace=True)
         temp_pd_df['NU_PESO'] = temp_pd_df['NU_PESO'].apply(lambda x: float(x.replace(',', '.')) if isinstance(x, str) else -1)
         temp_pd_df['NU_ALTURA'] = temp_pd_df['NU_ALTURA'].apply(lambda x: float(x.replace(',', '.')) if isinstance(x, str) else -1)
@@ -316,19 +316,19 @@ def thread_filter(filters: dict, id_thread: int, queue: Queue) -> dict:
 
     with open(realpath('.')+'/matplotimages/'+str(images[id_thread-1]), 'wb') as imagefile:
         pickle.dump(cidade, imagefile)
-    
+
     # Outside with because it will run faster than the file is closed
     subprocess.run(["python3", f"{realpath('.')}/image_builder.py", 'cidade', str(image_uuid)])
-    
+
     with open(realpath('.')+'/citiesjsons/'+str(images[id_thread-1]) + '.json', 'w') as jsonfile:
         # json.dump(pd_copy.describe().to_json(), jsonfile)
         # print(pd_copy.describe())
         # print(pd_copy['NU_PESO'].describe())
         jsonfile.write(pd_copy.describe().to_json())
-    
+
     with open(realpath('.')+'/citiesjsons/'+str(images[id_thread-1]) + 'CNES.json', 'w') as jsonfile:
         jsonfile.write(pd_copy['CO_CNES'].value_counts().to_json())
-    
+
     return {'msg': 'success'}
 
 
@@ -340,7 +340,7 @@ def get_slash():
         sleep(0.2)
 
     id_thread = -1
-    
+
     # Find first not None in threads array
     for i, thr in enumerate(threads):
         if thr == None:
@@ -388,7 +388,7 @@ def get_slash():
     if(exists(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + '.json')):
         with open(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + '.json', 'r') as j:
             json_data = j.read()
-    
+
     cnes_data = None
     if(exists(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + 'CNES.json')):
         with open(realpath('.')+'/citiesjsons/'+ images[id_thread-1] + 'CNES.json', 'r') as j:
